@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sallyshop.github.io/shop-website/sitemap.xml
