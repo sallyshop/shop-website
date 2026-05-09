@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sally's Art Studio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #f5f0e8;
+      --warm-white: #fdf9f3;
+      --ink: #1c1a18;
+      --terracotta: #c4623a;
+      --sage: #7a8c6e;
+      --gold: #c9a84c;
+      --dust: #e8dfd0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      background: var(--warm-white);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 4rem;
+      background: rgba(253,249,243,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--dust);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--terracotta); font-style: italic; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--ink);
+      font-size: 0.85rem; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--terracotta); }
+    .nav-cart {
+      background: var(--ink); color: var(--cream);
+      border: none; padding: 0.6rem 1.4rem;
+      font-family: 'Jost', sans-serif; font-size: 0.8rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .nav-cart:hover { background: var(--terracotta); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid; grid-template-columns: 1fr 1fr;
+      padding-top: 5rem;
+    }
+    .hero-text {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 6rem 4rem 6rem 6rem;
+      animation: fadeUp 0.9s ease both;
+    }
+    .hero-eyebrow {
+      font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--terracotta); margin-bottom: 1.4rem;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      line-height: 1.12;
+      margin-bottom: 1.6rem;
+    }
+    .hero-title em { color: var(--terracotta); font-style: italic; }
+    .hero-desc {
+      font-size: 1rem; font-weight: 300; line-height: 1.8;
+      color: #5a5550; max-width: 38ch;
+      margin-bottom: 2.8rem;
+    }
+    .hero-cta {
+      display: inline-block;
+      background: var(--terracotta); color: #fff;
+      text-decoration: none; padding: 1rem 2.2rem;
+      font-size: 0.85rem; letter-spacing: 0.14em; text-transform: uppercase;
+      font-weight: 500;
+      transition: background 0.25s, transform 0.2s;
+    }
+    .hero-cta:hover { background: #a84f2d; transform: translateY(-2px); }
+    .hero-visual {
+      background: var(--dust);
+      position: relative; overflow: hidden;
+      animation: fadeIn 1.2s ease both 0.3s;
+    }
+    .hero-canvas {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    /* Decorative painted canvas SVG */
+    .hero-canvas svg { width: 70%; max-width: 400px; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.15)); }
+
+    /* ── SECTION SHARED ── */
+    section { padding: 6rem 6rem; }
+    .section-label {
+      font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--sage); margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      margin-bottom: 3rem;
+    }
+
+    /* ── GALLERY / SHOP ── */
+    #shop { background: var(--warm-white); }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 2.5rem;
+    }
+    .card {
+      cursor: pointer;
+      animation: fadeUp 0.6s ease both;
+    }
+    .card:nth-child(2) { animation-delay: 0.1s; }
+    .card:nth-child(3) { animation-delay: 0.2s; }
+    .card:nth-child(4) { animation-delay: 0.3s; }
+    .card:nth-child(5) { animation-delay: 0.4s; }
+    .card:nth-child(6) { animation-delay: 0.5s; }
+    .card-img {
+      width: 100%; aspect-ratio: 4/5; overflow: hidden;
+      background: var(--dust);
+      position: relative;
+    }
+    .card-img svg { width: 100%; height: 100%; }
+    .card-img::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(28,26,24,0);
+      transition: background 0.3s;
+    }
+    .card:hover .card-img::after { background: rgba(28,26,24,0.08); }
+    .card-info { padding: 1rem 0 0; }
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem; margin-bottom: 0.3rem;
+    }
+    .card-meta {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .card-medium { font-size: 0.78rem; color: #888; letter-spacing: 0.05em; }
+    .card-price { font-size: 0.95rem; font-weight: 500; color: var(--terracotta); }
+    .card-btn {
+      display: block; width: 100%; margin-top: 0.9rem;
+      padding: 0.65rem;
+      border: 1.5px solid var(--ink); background: transparent;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+      cursor: pointer; transition: all 0.25s;
+    }
+    .card-btn:hover { background: var(--ink); color: #fff; }
+
+    /* ── ABOUT ── */
+    #about {
+      background: var(--ink); color: var(--cream);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem;
+      align-items: center;
+    }
+    #about .section-label { color: var(--gold); }
+    #about .section-title { color: var(--cream); margin-bottom: 1.5rem; }
+    #about p {
+      font-weight: 300; line-height: 1.9; color: #c2b9ad;
+      margin-bottom: 1rem;
+    }
+    .about-visual {
+      position: relative; height: 420px;
+    }
+    .about-block {
+      position: absolute;
+      background: var(--terracotta);
+      opacity: 0.18;
+    }
+    .about-block.b1 { width: 260px; height: 340px; top: 0; left: 40px; }
+    .about-block.b2 { width: 200px; height: 260px; bottom: 0; left: 0; background: var(--gold); }
+    .about-portrait {
+      position: absolute; top: 20px; left: 20px; right: 20px; bottom: 20px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .about-portrait svg { width: 260px; }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--cream); }
+    .contact-inner {
+      max-width: 520px;
+    }
+    .contact-inner p { font-weight: 300; line-height: 1.8; margin-bottom: 2rem; color: #5a5550; }
+    .form-row { margin-bottom: 1.2rem; }
+    .form-row label {
+      display: block; font-size: 0.72rem; letter-spacing: 0.2em;
+      text-transform: uppercase; margin-bottom: 0.5rem; color: #888;
+    }
+    .form-row input, .form-row textarea {
+      width: 100%; padding: 0.75rem 1rem;
+      border: 1px solid #d4ccbf; background: var(--warm-white);
+      font-family: 'Jost', sans-serif; font-size: 0.95rem;
+      outline: none; transition: border-color 0.2s;
+      resize: vertical;
+    }
+    .form-row input:focus, .form-row textarea:focus { border-color: var(--terracotta); }
+    .form-submit {
+      background: var(--terracotta); color: #fff;
+      border: none; padding: 1rem 2.5rem;
+      font-family: 'Jost', sans-serif; font-size: 0.85rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.2s, transform 0.2s;
+    }
+    .form-submit:hover { background: #a84f2d; transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink); color: #6b6360;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 2rem 6rem;
+      font-size: 0.8rem; letter-spacing: 0.06em;
+    }
+    footer a { color: var(--terracotta); text-decoration: none; }
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem; color: var(--cream);
+    }
+    .footer-logo span { color: var(--terracotta); font-style: italic; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
+      background: var(--ink); color: var(--cream);
+      padding: 0.9rem 1.8rem;
+      font-size: 0.85rem; letter-spacing: 0.06em;
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-visual { height: 50vw; min-height: 260px; }
+      .hero-text { padding: 5rem 1.5rem 3rem; }
+      section { padding: 4rem 1.5rem; }
+      #about { grid-template-columns: 1fr; gap: 2rem; }
+      .about-visual { height: 220px; }
+      footer { flex-direction: column; gap: 1rem; padding: 2rem 1.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">Sally's <span>Studio</span></a>
+  <ul class="nav-links">
+    <li><a href="#shop">Shop</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-cart">🛒 Cart (0)</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-text">
+    <p class="hero-eyebrow">Original Paintings · Made with Love</p>
+    <h1 class="hero-title">Art that lives<br>on your <em>walls</em></h1>
+    <p class="hero-desc">Hand-painted originals by Sally — each piece tells a story, captured in oil, acrylic, and watercolour. No prints. No copies. Just pure, singular art.</p>
+    <a class="hero-cta" href="#shop">Browse the Collection</a>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-canvas">
+      <!-- Decorative painted canvas illustration -->
+      <svg viewBox="0 0 360 460" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="10" width="340" height="440" fill="#fff" rx="2" stroke="#d4ccbf" stroke-width="2"/>
+        <!-- Abstract landscape painting -->
+        <rect x="10" y="280" width="340" height="170" fill="#7a8c6e"/>
+        <ellipse cx="180" cy="280" rx="200" ry="80" fill="#c4623a" opacity="0.7"/>
+        <circle cx="120" cy="160" r="70" fill="#c9a84c" opacity="0.85"/>
+        <rect x="10" y="10" width="340" height="160" fill="#e8dfd0"/>
+        <ellipse cx="280" cy="90" rx="55" ry="55" fill="#c4623a" opacity="0.4"/>
+        <ellipse cx="60" cy="200" rx="40" ry="40" fill="#7a8c6e" opacity="0.6"/>
+        <!-- Canvas frame -->
+        <rect x="10" y="10" width="340" height="440" fill="none" rx="2" stroke="#bfb49e" stroke-width="14"/>
+        <rect x="4" y="4" width="352" height="452" fill="none" rx="3" stroke="#8a7f72" stroke-width="5"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- SHOP -->
+<section id="shop">
+  <p class="section-label">The Collection</p>
+  <h2 class="section-title">Original Paintings</h2>
+  <div class="gallery-grid" id="gallery"></div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div>
+    <p class="section-label">The Artist</p>
+    <h2 class="section-title">Hello, I'm Sally.</h2>
+    <p>I've been painting for over fifteen years, driven by a love of colour, texture, and the quiet stories that landscapes and still lifes can hold. Each piece in my studio starts with a feeling — a light I couldn't forget, a moment worth preserving.</p>
+    <p>I work primarily in oils and acrylics, with occasional forays into watercolour when the mood calls for something more fleeting. Every painting is one-of-a-kind and ships with a signed certificate of authenticity.</p>
+    <p>Based in my home studio, I ship worldwide. Commissions welcome.</p>
+  </div>
+  <div class="about-visual">
+    <div class="about-block b1"></div>
+    <div class="about-block b2"></div>
+    <div class="about-portrait">
+      <svg viewBox="0 0 260 320" xmlns="http://www.w3.org/2000/svg">
+        <!-- Simple illustrative portrait of artist at easel -->
+        <rect x="80" y="180" width="10" height="120" fill="#c9a84c" opacity="0.6"/>
+        <rect x="160" y="180" width="10" height="120" fill="#c9a84c" opacity="0.6"/>
+        <rect x="72" y="175" width="106" height="80" fill="#e8dfd0" rx="2" stroke="#c9a84c" stroke-width="2"/>
+        <!-- painting on easel -->
+        <rect x="78" y="181" width="94" height="68" fill="#7a8c6e" opacity="0.5"/>
+        <circle cx="125" cy="215" r="22" fill="#c4623a" opacity="0.6"/>
+        <!-- Artist figure -->
+        <circle cx="200" cy="130" r="28" fill="#c4623a" opacity="0.85"/>
+        <rect x="178" y="158" width="44" height="70" fill="#7a8c6e" opacity="0.85" rx="4"/>
+        <rect x="178" y="158" width="20" height="50" fill="#5a6e50" opacity="0.5" rx="2"/>
+        <!-- arm holding brush -->
+        <line x1="178" y1="185" x2="135" y2="215" stroke="#c4623a" stroke-width="6" stroke-linecap="round"/>
+        <line x1="135" y1="215" x2="122" y2="230" stroke="#1c1a18" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <p class="section-label">Get in Touch</p>
+    <h2 class="section-title">Enquiries & Commissions</h2>
+    <p>Interested in a piece, or want something made just for you? Send me a message and I'll get back to you within 48 hours.</p>
+    <div class="form-row">
+      <label>Your Name</label>
+      <input type="text" placeholder="e.g. Jane Smith"/>
+    </div>
+    <div class="form-row">
+      <label>Email Address</label>
+      <input type="email" placeholder="jane@example.com"/>
+    </div>
+    <div class="form-row">
+      <label>Message</label>
+      <textarea rows="5" placeholder="Tell me what you have in mind…"></textarea>
+    </div>
+    <button class="form-submit" onclick="showToast('Message sent! Sally will be in touch soon.')">Send Message</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Sally's <span>Studio</span></div>
+  <span>© 2026 Sally's Art Studio. All rights reserved.</span>
+  <span>Made with ♥ and paint</span>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // Painting data
+  const paintings = [
+    { title: "Golden Afternoon", medium: "Oil on canvas", price: "$480", color1: "#c9a84c", color2: "#e8dfd0", shape: "sun" },
+    { title: "Still Waters", medium: "Acrylic on canvas", price: "$395", color1: "#7a8c6e", color2: "#c4e0d4", shape: "wave" },
+    { title: "Ember Dusk", medium: "Oil on linen", price: "$620", color1: "#c4623a", color2: "#f5c89a", shape: "horizon" },
+    { title: "The Garden Path", medium: "Watercolour", price: "$275", color1: "#9db888", color2: "#fdf6e3", shape: "circle" },
+    { title: "Terracotta Morning", medium: "Oil on canvas", price: "$540", color1: "#c4623a", color2: "#e8c4a0", shape: "arch" },
+    { title: "Blue Hour", medium: "Acrylic on board", price: "$350", color1: "#5b7fa6", color2: "#d4e3f0", shape: "moon" },
+  ];
+
+  function makePaintingSVG(p) {
+    const shapes = {
+      sun: `<rect width="270" height="340" fill="${p.color2}"/>
+            <circle cx="135" cy="140" r="75" fill="${p.color1}" opacity="0.85"/>
+            <rect y="220" width="270" height="120" fill="${p.color1}" opacity="0.3"/>`,
+      wave: `<rect width="270" height="340" fill="${p.color2}"/>
+             <ellipse cx="135" cy="260" rx="160" ry="100" fill="${p.color1}" opacity="0.6"/>
+             <ellipse cx="135" cy="300" rx="180" ry="80" fill="${p.color1}" opacity="0.9"/>`,
+      horizon: `<rect width="270" height="340" fill="${p.color2}"/>
+                <rect y="180" width="270" height="160" fill="${p.color1}"/>
+                <ellipse cx="135" cy="180" rx="220" ry="60" fill="${p.color1}" opacity="0.5"/>`,
+      circle: `<rect width="270" height="340" fill="${p.color2}"/>
+               <circle cx="80" cy="100" r="50" fill="${p.color1}" opacity="0.7"/>
+               <circle cx="190" cy="200" r="70" fill="${p.color1}" opacity="0.4"/>
+               <circle cx="120" cy="280" r="40" fill="${p.color1}" opacity="0.6"/>`,
+      arch: `<rect width="270" height="340" fill="${p.color2}"/>
+             <path d="M55 340 Q55 60 135 60 Q215 60 215 340 Z" fill="${p.color1}" opacity="0.75"/>`,
+      moon: `<rect width="270" height="340" fill="${p.color1}" opacity="0.25"/>
+             <rect width="270" height="340" fill="${p.color2}" opacity="0.7"/>
+             <circle cx="160" cy="110" r="65" fill="${p.color1}" opacity="0.9"/>
+             <circle cx="185" cy="90" r="55" fill="${p.color2}" opacity="0.95"/>`,
+    };
+    return `<svg viewBox="0 0 270 340" xmlns="http://www.w3.org/2000/svg">${shapes[p.shape]}</svg>`;
+  }
+
+  let cartCount = 0;
+  const gallery = document.getElementById('gallery');
+
+  paintings.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-img">${makePaintingSVG(p)}</div>
+      <div class="card-info">
+        <div class="card-title">${p.title}</div>
+        <div class="card-meta">
+          <span class="card-medium">${p.medium}</span>
+          <span class="card-price">${p.price}</span>
+        </div>
+        <button class="card-btn" onclick="addToCart('${p.title}')">Add to Cart</button>
+      </div>`;
+    gallery.appendChild(card);
+  });
+
+  function addToCart(title) {
+    cartCount++;
+    document.querySelector('.nav-cart').textContent = `🛒 Cart (${cartCount})`;
+    showToast(`"${title}" added to cart!`);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+</script>
+</body>
+</html>
